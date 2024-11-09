@@ -1,0 +1,1 @@
+export { backendBaseUrl } from "@/shared/config/backend.ts";

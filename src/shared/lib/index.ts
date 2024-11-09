@@ -1,0 +1,1 @@
+export { useJWTToken } from "@/shared/lib/hooks.ts";

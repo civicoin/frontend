@@ -1,6 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @import url("./App.css"); */
 #root {
   height: 100vh;
 }
+
+@font-face {
+  font-family: 'Montserrat';
+  src:
+       url('../assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('../assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf')  format('truetype'), /* Safari, Android, iOS */
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 /*:root {*/
 /*  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;*/
 /*  line-height: 1.5;*/
