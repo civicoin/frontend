@@ -1,0 +1,1 @@
+export { SystemForm as NewSystemPage } from "@/features/SystemForm";

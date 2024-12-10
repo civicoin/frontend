@@ -6,6 +6,13 @@
     "version": "0.1.0"
   },
   "components": {
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    },
     "schemas": {
       "def-0": {
         "type": "object",
@@ -346,18 +353,52 @@
               "signature"
             ],
             "additionalProperties": false
+          },
+          "issueTxSchema": {
+            "type": "object",
+            "properties": {
+              "receiverId": {
+                "$ref": "#/components/schemas/def-2/properties/sendTxSchema/properties/receiverId"
+              },
+              "amount": {
+                "$ref": "#/components/schemas/def-2/properties/sendTxSchema/properties/amount"
+              },
+              "signature": {
+                "$ref": "#/components/schemas/def-2/properties/sendTxSchema/properties/signature"
+              }
+            },
+            "required": [
+              "receiverId",
+              "amount",
+              "signature"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
-          "sendTxSchema"
+          "sendTxSchema",
+          "issueTxSchema"
         ],
         "additionalProperties": false,
         "title": "tx"
+      },
+      "def-3": {
+        "type": "object",
+        "properties": {
+          "balanceResponseSchema": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "balanceResponseSchema"
+        ],
+        "additionalProperties": false,
+        "title": "balance"
       }
     }
   },
   "paths": {
-    "/system/": {
+    "/system": {
       "post": {
         "summary": "Create a new system",
         "tags": [
@@ -380,28 +421,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/def-0/properties/createSystemResponseSchema"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "summary": "Get systems",
-        "tags": [
-          "System"
-        ],
-        "description": "Find systems by name",
-        "responses": {
-          "200": {
-            "description": "Default Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/def-0/properties/systemResponseSchema"
-                  }
                 }
               }
             }
@@ -432,6 +451,40 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/def-0/properties/loginSystemResponseSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/systems": {
+      "get": {
+        "summary": "Get systems",
+        "tags": [
+          "System"
+        ],
+        "description": "Find systems by name",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/def-0/properties/systemResponseSchema"
+                  }
                 }
               }
             }
@@ -470,7 +523,7 @@
         }
       }
     },
-    "/member/": {
+    "/member": {
       "post": {
         "summary": "Create a new member",
         "tags": [
@@ -502,11 +555,11 @@
     },
     "/member/login": {
       "post": {
-        "summary": "Login to system as member",
+        "summary": "Login to a member",
         "tags": [
           "Member"
         ],
-        "description": "Login to system as member",
+        "description": "Login to a member",
         "requestBody": {
           "content": {
             "application/json": {
@@ -565,20 +618,64 @@
         }
       }
     },
-    "/member/{find}": {
+    "/member/members": {
+      "get": {
+        "summary": "Get members",
+        "tags": [
+          "Member"
+        ],
+        "description": "Find members by name",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "name",
+            "required": false
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/def-1/properties/memberResponseSchema"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/{id}": {
       "get": {
         "summary": "Get member of authed system",
         "tags": [
           "Member"
         ],
         "description": "Get member of authed system",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "parameters": [
           {
             "schema": {
               "type": "string"
             },
             "in": "path",
-            "name": "find",
+            "name": "id",
             "required": true
           }
         ],
@@ -612,9 +709,68 @@
             }
           }
         },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/tx/issue": {
+      "post": {
+        "summary": "Issue coins to a member",
+        "tags": [
+          "Transaction"
+        ],
+        "description": "Issue coins to a member",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/def-2/properties/issueTxSchema"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/balance": {
+      "get": {
+        "summary": "Get the balance of the current user",
+        "tags": [
+          "Balance"
+        ],
+        "description": "Get the balance of the current user",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-3/properties/balanceResponseSchema"
+                }
+              }
+            }
           }
         }
       }
@@ -622,7 +778,7 @@
   },
   "servers": [
     {
-      "url": "https://localhost:5000"
+      "url": "http://127.0.0.1:5000"
     }
   ]
 }

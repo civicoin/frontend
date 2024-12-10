@@ -9,9 +9,10 @@ import MainPage from "@/pages/MainPage";
 import SendPage from "@/pages/SendPage";
 import { useJWTToken } from "@/shared/lib";
 import { Button, Panel } from "@/shared/ui/components";
+import { NewSystemPage } from "@/pages/NewSystemPage";
 
 function LayoutWithHeaderAndAuthChecker() {
-  const [token] = useJWTToken();
+  const {token} = useJWTToken();
   const navigate = useNavigate();
 
   return (
@@ -45,6 +46,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/createSystem" element={<NewSystemPage />} />
 
           <Route path="/" element={<LayoutWithHeaderAndAuthChecker />}>
             <Route index={true} element={<MainPage />} />

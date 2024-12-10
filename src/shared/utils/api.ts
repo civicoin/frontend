@@ -7,8 +7,12 @@ export async function throwAnyErrors<T extends Record<string | number, unknown>,
   const { data, error, response } = await responsePromise;
 
   if (error !== undefined) {
-    throw json(error, { status: response.status });
+    const obj = json(error, { status: response.status });
+    const serializedData = await obj.json();
+    // const obj = json(error, { status: response.status });
+    throw serializedData;
   }
 
-  return data as NonNullable<typeof data>;
+  // return data as NonNullable<typeof data>
+  return { data: data as NonNullable<typeof data>, error, response }
 }

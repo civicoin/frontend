@@ -1,6 +1,6 @@
 import { throwAnyErrors } from "@/shared/utils/api.ts";
 import { POST } from "@/shared/api/client.ts";
-import { CreateMemberSchema } from "@/features/LoginForm/models";
+import { CreateMemberSchema } from "../models";
 
 /**
  * 2 типа регистрации:
@@ -23,7 +23,7 @@ export async function signIn({name, systemId, password}: CreateMemberSchema) {
 
 /** Create new member */
 export async function signUp({name, systemId, password}: CreateMemberSchema) {
-  return await throwAnyErrors(POST("/member/", {
+  return await throwAnyErrors(POST("/member", {
     body: {
       name, systemId, password
     }

@@ -9,8 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "tailwind": "tailwindcss -i ./src/app/ui/styles/input.css -o ./src/app/ui/styles/style.css --watch",
-    "generate-api-types": "openapi-typescript ./src/shared/config/openApiSchema.yaml --output ./src/shared/api/v1.d.ts",
-    "generate-api-types-2": "openapi-typescript ./src/shared/config/openApiSchema.json --output ./src/shared/api/v1-2.d.ts"
+    "generate-api-types": "openapi-typescript ./src/shared/config/openApiSchema.json --output ./src/shared/api/v1.d.ts"
   },
   "dependencies": {
     "react": "^18.2.0",

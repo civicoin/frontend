@@ -1,25 +1,29 @@
 import { useState } from 'react';
 
-type JWTToken = {
-  token: string;
-}
+export type JWTToken = string;
 
 function getToken() {
-  const tokenString = localStorage.getItem('token');
-  // const tokenString = null;
-  if (tokenString === null) return undefined;
+  const stringToken = localStorage.getItem("accessToken");
+  // const stringToken = null;
+  if (stringToken === null) return undefined;
 
-  const userToken = JSON.parse(tokenString);
-  return userToken?.token;
+  // const userToken = JSON.parse(stringToken);
+  // return userToken?.token;
+  return stringToken;
+}
+
+function updateToken(stringToken: JWTToken) {
+  localStorage.setItem("accessToken", stringToken);
+  return stringToken;
 }
 
 export function useJWTToken() {
   const [token, setToken] = useState(getToken());
 
-  function saveToken (userToken: JWTToken) {
-    // localStorage.setItem('token', JSON.stringify(userToken));
-    setToken(userToken.token);
+  function saveToken (userToken: string) {
+    updateToken(userToken);
+    setToken(userToken);
   }
 
-  return [token, saveToken];
+  return {token, saveToken};
 }

@@ -4,37 +4,14 @@
  */
 
 export interface paths {
-    "/system/": {
+    "/system": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get systems
-         * @description Find systems by name
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Default Response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["def-0"]["systemResponseSchema"][];
-                    };
-                };
-            };
-        };
+        get?: never;
         put?: never;
         /**
          * Create a new system
@@ -113,6 +90,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/system/systems": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get systems
+         * @description Find systems by name
+         */
+        get: {
+            parameters: {
+                query?: {
+                    name?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"]["systemResponseSchema"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/system/{id}": {
         parameters: {
             query?: never;
@@ -154,7 +172,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/member/": {
+    "/member": {
         parameters: {
             query?: never;
             header?: never;
@@ -284,7 +302,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/member/{find}": {
+    "/member/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get members
+         * @description Find members by name
+         */
+        get: {
+            parameters: {
+                query?: {
+                    name?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-1"]["memberResponseSchema"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/member/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -300,7 +359,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    find: string;
+                    id: string;
                 };
                 cookie?: never;
             };
@@ -360,6 +419,86 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tx/issue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Issue coins to a member
+         * @description Issue coins to a member
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["def-2"]["issueTxSchema"];
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the balance of the current user
+         * @description Get the balance of the current user
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-3"]["balanceResponseSchema"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -456,6 +595,15 @@ export interface components {
                 amount: string;
                 signature: string;
             };
+            issueTxSchema: {
+                receiverId: components["schemas"]["def-2"]["sendTxSchema"]["receiverId"];
+                amount: components["schemas"]["def-2"]["sendTxSchema"]["amount"];
+                signature: components["schemas"]["def-2"]["sendTxSchema"]["signature"];
+            };
+        };
+        /** balance */
+        "def-3": {
+            balanceResponseSchema: string;
         };
     };
     responses: never;
