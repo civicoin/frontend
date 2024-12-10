@@ -26,11 +26,11 @@ export function LoginForm() {
 
   const checker = debounce(async (systemName: string) => {
     const system = await getSystemByName(systemName);
-    const systemExists = !system.error && system.data.length > 0;
-    setIsNewSystem(!systemExists);
-    if (systemExists) {
-      const systemInfo = system.data.find(info => info.name === systemName);
-      setSystemId(systemInfo!.id)
+    // const systemExists = !system.error && system.data.length > 0;
+    const systemInfo = system.data.find(info => info.name === systemName);
+    setIsNewSystem(systemName !== "" && systemInfo === undefined);
+    if (systemInfo !== undefined) {
+        setSystemId(systemInfo!.id);
     }
     // if (system.error) {
     //   setIsNewSystem(true);
@@ -85,7 +85,7 @@ export function LoginForm() {
     setActiveTabIndex(i);
     const buttonName = TABS[i];
     setButtonName(buttonName);
-    setIsNewSystem(false);
+    // setIsNewSystem(false);
   }
 
   {/* TODO Error block */}
@@ -100,13 +100,13 @@ export function LoginForm() {
               <form className="flex flex-col gap-6 w-full" onSubmit={async (e) => await onFormSubmit(e)}>
                 <div className="flex flex-col gap-1">
                   <InputText id="systemName" label="System name" required={true} onChange={(e) => checkSystemExistence(e.target)} />
-                  {isNewSystem && (
+                  {activeTabIndex === defaultActiveTabIndex && isNewSystem && (
                       <div className={"text-xl"}>System is not found. New system is going to be created.</div>
                   )}
                   <InputText id="name" label="Username" required={true}/>
                   <InputText type={"password"} id="password" label="Password" required={true}/>
                 </div>
-                <Button>{buttonName}</Button>
+                <Button disabled={activeTabIndex !== defaultActiveTabIndex && isNewSystem}>{buttonName}</Button>
               </form>
             </div>
           </div>

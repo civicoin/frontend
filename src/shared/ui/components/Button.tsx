@@ -7,6 +7,7 @@ interface ButtonProps {
   style?: object
   background?: string
   fontSize?: string
+  disabled?: boolean
   onClick?: () => unknown
 }
 
@@ -18,7 +19,8 @@ export function Button(props: ButtonProps) {
   );
 
   return (
-    <button onClick={props.onClick} style={props.style} className={`rounded-2xl cursor-pointer w-full flex justify-center items-center py-2 font-medium ${classes}`}>
+    <button disabled={props.disabled || false} onClick={props.onClick} style={props.style}
+            className={`rounded-2xl cursor-pointer w-full flex justify-center items-center py-2 font-medium ${classes} disabled:cursor-default disabled:bg-gray-100`}>
       {props.children}
     </button>
   )

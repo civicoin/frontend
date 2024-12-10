@@ -898,6 +898,10 @@ video {
 
 /*}*/
 
+.disabled\:cursor-default:disabled {
+  cursor: default;
+}
+
 .disabled\:bg-slate-400:disabled {
   --tw-bg-opacity: 1;
   background-color: rgb(148 163 184 / var(--tw-bg-opacity));
