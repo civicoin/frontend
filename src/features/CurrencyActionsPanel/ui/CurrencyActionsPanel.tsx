@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 import { Button, Panel } from "@/shared/ui/components";
 import ArrowUp from "@/shared/ui/assets/icons/arrow_up.svg?react";
-import { useEffect, useState } from "react";
 import { getMe } from "@/shared/api/user.ts";
 import { getBalance, getSystemById } from "@/shared/api/system.ts";
 import { JWTToken, useJWTToken } from "@/shared/lib/hooks.ts";
