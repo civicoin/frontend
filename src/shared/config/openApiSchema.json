@@ -287,21 +287,8 @@
                   "DELETED"
                 ]
               },
-              "system": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "id",
-                  "name"
-                ],
-                "additionalProperties": false
+              "systemId": {
+                "$ref": "#/components/schemas/def-1/properties/createMemberSchema/properties/systemId"
               },
               "created": {
                 "type": "string"
@@ -314,7 +301,7 @@
               "name",
               "id",
               "status",
-              "system",
+              "systemId",
               "created",
               "updated"
             ],
@@ -590,6 +577,11 @@
           "Member"
         ],
         "description": "Get member private key",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response",

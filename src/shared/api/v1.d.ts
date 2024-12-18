@@ -580,10 +580,7 @@ export interface components {
                 id: string;
                 /** @enum {string} */
                 status: "VALIDATING" | "REJECTED" | "ACTIVE" | "DELETED";
-                system: {
-                    id: string;
-                    name: string;
-                };
+                systemId: components["schemas"]["def-1"]["createMemberSchema"]["systemId"];
                 created: string;
                 updated: string;
             };
