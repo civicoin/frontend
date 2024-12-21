@@ -1,23 +1,31 @@
-// import { Button } from ".";
-import { Logo } from "./Logo";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import Logout from "../assets/icons/logout.svg?react";
 // import Logo from "../assets/icons/logo.svg?react";
 // import Gear from "../assets/icons/gear.svg?react";
 import ArrowUp from "../assets/icons/arrow_up.svg?react";
-import { useJWTToken } from "@/shared/lib";
-import { useEffect, useState } from "react";
-import { getMe } from "@/shared/api/user.ts";
-import { useNavigate } from "react-router-dom";
+import { useJWTToken } from "../../lib";
+import { getMe } from "../../api/user";
+
+import { Logo } from "./Logo";
 
 export function Header() {
   const navigate = useNavigate();
-  const {token} = useJWTToken();
+  const {token, clearToken} = useJWTToken();
   const [username, setUsername] = useState("");
+
   useEffect(() => {
     if (token) {
       getMe(token).then(res => {
         setUsername(res.data.name);
       });
     }
+  }, []);
+
+  const onLogout = useCallback(function onLogout() {
+    clearToken();
+    // navigate("")
   }, []);
 
   return (
@@ -27,6 +35,7 @@ export function Header() {
         {token !== undefined ?
         <>
           <span className="font-semibold">{username}</span>
+          <Logout height="18" className={"cursor-pointer"} title={"Log out"} onClick={onLogout} />
           {/* TODO */}
           {/* <Button className="px-2" background="bg-dark">
             <Gear width="18" height="18" />

@@ -1,23 +1,24 @@
 import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Button, InputText, Logo, Panel } from "@/shared/ui/components";
-import { type TabHandler, Tabs } from "@/features/LoginForm/ui/TabsRow.tsx";
 import { CreateMemberSchema } from "@/shared/models";
 import { getSystemByName } from "@/shared/api/system.ts";
 import { debounce } from "@/shared/utils";
-import { useNavigate } from "react-router-dom";
-import { signUp, signIn } from "@/shared/api/auth.ts";
+import { signUp, signIn, signInAsSystem } from "@/shared/api/auth.ts";
 import { useJWTToken } from "@/shared/lib";
 
+import { type TabHandler, Tabs } from "./TabsRow.tsx";
+
 interface FormFields extends HTMLFormControlsCollection {
-  name: HTMLInputElement,
+  username: HTMLInputElement,
   systemName: HTMLInputElement,
   password: HTMLInputElement,
 }
 
-const TABS = ["Sign up", "Sign in"];
+const TABS = ["Sign in", "Sign up"];
+const signUpIndex = TABS.indexOf("Sign up");
 
-const defaultActiveTabIndex = 0;
 export function LoginForm() {
   const navigate = useNavigate();
   const {saveToken} = useJWTToken();
@@ -37,19 +38,19 @@ export function LoginForm() {
     // }
   }, 500);
 
-  const [activeTabIndex, setActiveTabIndex] = useState(defaultActiveTabIndex);
-  const btnName = TABS[defaultActiveTabIndex];
-  const [buttonName, setButtonName] = useState<string>(btnName);
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [buttonName, setButtonName] = useState<string>(TABS[0]);
 
-  async function onSignIn(data: CreateMemberSchema) {
-    const res = await signIn(data);
+  async function onSignIn(data: CreateMemberSchema & {systemName: string}) {
+    const res = data.name !== "" ? await signIn(data) : await signInAsSystem({name: data.systemName, password: data.password});
     if (res.data.accessToken) {
       saveToken(res.data.accessToken);
       return true;
     }
     return false;
   }
-  async function onRegister(data: CreateMemberSchema) {
+
+  async function onRegister(data: CreateMemberSchema & {systemName: string}) {
     const res = await signUp(data);
     if (res.response.ok) {
       await onSignIn(data);
@@ -59,19 +60,19 @@ export function LoginForm() {
       return false;
     }
   }
-  const TABS_HANDLER = [onRegister, onSignIn];
+  const TABS_HANDLER = [onSignIn, onRegister];
 
   async function onFormSubmit(e: FormEvent) {
     e.preventDefault();
     const { elements } = e.currentTarget as HTMLFormElement;
-    const {name, systemName, password} = elements as FormFields;
+    const {username, systemName, password} = elements as FormFields;
 
-    if (isNewSystem && activeTabIndex === defaultActiveTabIndex) {
+    if (isNewSystem && activeTabIndex === signUpIndex) {
       navigate("/createSystem", {
-        state: {name: name.value, systemName: systemName.value, password: password.value}
+        state: {systemName: systemName.value, password: password.value}
       });
     } else {
-      const res = await TABS_HANDLER[activeTabIndex]({name: name.value, systemId, password: password.value});
+      const res = await TABS_HANDLER[activeTabIndex]({name: username.value, systemId, password: password.value, systemName: systemName.value});
       res && navigate("/");
     }
   }
@@ -100,13 +101,13 @@ export function LoginForm() {
               <form className="flex flex-col gap-6 w-full" onSubmit={async (e) => await onFormSubmit(e)}>
                 <div className="flex flex-col gap-1">
                   <InputText id="systemName" label="System name" required={true} onChange={(e) => checkSystemExistence(e.target)} />
-                  {activeTabIndex === defaultActiveTabIndex && isNewSystem && (
+                  {activeTabIndex === signUpIndex && isNewSystem && (
                       <div className={"text-xl"}>System is not found. New system is going to be created.</div>
                   )}
-                  <InputText id="name" label="Username" required={true}/>
+                  <InputText id="username" label="Username" disabled={isNewSystem}/>
                   <InputText type={"password"} id="password" label="Password" required={true}/>
                 </div>
-                <Button disabled={activeTabIndex !== defaultActiveTabIndex && isNewSystem}>{buttonName}</Button>
+                <Button disabled={activeTabIndex !== signUpIndex && isNewSystem}>{buttonName}</Button>
               </form>
             </div>
           </div>

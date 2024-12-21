@@ -1,11 +1,13 @@
-import { Button, InputText, Logo, Panel } from "@/shared/ui/components";
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { createSystem } from "@/features/SystemForm/api";
 import { useLocation, useNavigate } from "react-router-dom";
-import { signIn, signUp } from "@/shared/api/auth.ts";
+
+import { Button, InputText, Logo, Panel } from "@/shared/ui/components";
 import { debounce } from "@/shared/utils";
 import { getSystemByName } from "@/shared/api/system.ts";
 import { useJWTToken } from "@/shared/lib";
+import { signInAsSystem } from "@/shared/api/auth.ts";
+
+import { createSystem } from "../api";
 
 interface FormFields extends HTMLFormControlsCollection {
   systemName: HTMLInputElement,
@@ -17,6 +19,7 @@ function SystemForm() {
   const location = useLocation();
   const navigate = useNavigate();
   const {saveToken} = useJWTToken();
+
   const [isNewSystem, setIsNewSystem] = useState(false);
   const checker = debounce(async (systemName: string) => {
     const system = await getSystemByName(systemName);
@@ -24,9 +27,15 @@ function SystemForm() {
     setIsNewSystem(!systemExists);
   }, 500);
 
+  const [systemName, setSystemName] = useState("");
+  const [systemPassword, setSystemPassword] = useState("");
+
   useEffect(() => {
     if (location.state !== null) {
-      checker(location.state.systemName);
+      const { systemName, password } = location.state;
+      checker(systemName);
+      setSystemName(systemName);
+      setSystemPassword(password);
     }
   }, []);
 
@@ -34,18 +43,14 @@ function SystemForm() {
     e.preventDefault();
     const {elements} = e.currentTarget as HTMLFormElement;
     const {systemName, systemPassword, coinName} = elements as FormFields;
+    const systemCredentials = { name: systemName.value, password: systemPassword.value };
 
-    const systemInfo = await createSystem({name: systemName.value, password: systemPassword.value, coin: coinName.value})
-    if (systemInfo.response.ok && location.state) {
-      const { name, password } = location.state;
-      const data = {name, systemId: systemInfo.data.id, password};
-      const newUser = await signUp(data);
-      if (newUser.response.ok) {
-        const sign = await signIn(data);
-        if (sign.response.ok) {
-          saveToken(sign.data.accessToken);
-          navigate("/");
-        }
+    const systemInfo = await createSystem({...systemCredentials, coin: coinName.value})
+    if (systemInfo.response.ok) {
+      const signed = await signInAsSystem(systemCredentials);
+      if (signed.response.ok) {
+        saveToken(signed.data.accessToken);
+        navigate("/");
       }
     } else {
       navigate("/login");
@@ -53,8 +58,9 @@ function SystemForm() {
     }
   }, []);
 
-  const checkSystemExistence = useCallback(function checkSystemExistence(e: HTMLInputElement) {
+  const onSystemNameChange = useCallback(function onSystemNameChange(e: HTMLInputElement) {
     const value = e.value;
+    setSystemName(value);
     checker(value);
   }, []);
 
@@ -66,16 +72,16 @@ function SystemForm() {
             <div className="flex">
               <form className="flex flex-col gap-6 w-full" onSubmit={async (e) => await onFormSubmit(e)}>
                 <div className="flex flex-col gap-1">
-                  <InputText id="systemName" label="System name" disabled={location.state !== null}
-                             value={location.state !== null ? location.state.systemName : undefined} required={true} onChange={(e) => checkSystemExistence(e.currentTarget)}/>
-                  {/*<InputText id="systemName" label="System name" required={true}/>*/}
-                  {isNewSystem && (
-                      <div className={"text-xl"}>System is not found. New system is going to be created.</div>
+                  <InputText id="systemName" label="System name" onChange={(e) => onSystemNameChange(e.currentTarget)}
+                             value={systemName} required={true} />
+                  {!isNewSystem && (
+                      <div className={"text-xl"}>System already exists.</div>
                   )}
-                  <InputText type={"password"} id="systemPassword" label="System password" required={true}/>
+                  <InputText type="password" id="systemPassword" label="System password" onChange={(e) => setSystemPassword(e.currentTarget.value)}
+                             value={systemPassword} required={true}/>
                   <InputText id="coinName" label="Coin name" required={true}/>
                 </div>
-                <Button>{"Create new system"}</Button>
+                <Button disabled={!isNewSystem}>{"Create new system"}</Button>
               </form>
             </div>
           </div>

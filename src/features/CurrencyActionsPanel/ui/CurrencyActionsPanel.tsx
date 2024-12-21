@@ -27,8 +27,10 @@ export function CurrencyActionsPanel() {
         setBalance(res.balance);
         setCurrency(res.coinName);
       });
+    } else {
+      navigate("/");
     }
-  }, []);
+  }, [token]);
 
   return (
     <Panel>

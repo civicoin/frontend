@@ -1,9 +1,10 @@
 import React from "react";
+import { Route, Routes, BrowserRouter, Outlet, useNavigate } from "react-router-dom";
+
 // import './App.css'
 // import './output.css'
 import './styles/style.css';
-import Header from "../../shared/ui/components/Header.tsx";
-import { Route, Routes, BrowserRouter, Outlet, useNavigate } from "react-router-dom";
+import Header from "@/shared/ui/components/Header.tsx";
 import LoginPage from "@/pages/LoginPage";
 import MainPage from "@/pages/MainPage";
 import SendPage from "@/pages/SendPage";
@@ -26,13 +27,10 @@ function LayoutWithHeaderAndAuthChecker() {
         <Panel>
           <div className="my-8 mx-5 flex flex-col gap-y-4">
             <div className="text-4xl">It seems like you are logged out.</div>
-            <Button onClick={() => navigate("/login")}>Sign in</Button>
+            <Button onClick={() => navigate("/login")}>Log in</Button>
           </div>
         </Panel>
       )}
-      <main className="h-full">
-        <Outlet />
-      </main>
     </>
   );
 }

@@ -25,5 +25,10 @@ export function useJWTToken() {
     setToken(userToken);
   }
 
-  return {token, saveToken};
+  function clearToken() {
+    localStorage.removeItem("accessToken");
+    setToken(undefined);
+  }
+
+  return {token, saveToken, clearToken};
 }
