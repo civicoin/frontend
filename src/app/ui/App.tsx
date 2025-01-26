@@ -8,18 +8,20 @@ import Header from "@/shared/ui/components/Header.tsx";
 import LoginPage from "@/pages/LoginPage";
 import MainPage from "@/pages/MainPage";
 import SendPage from "@/pages/SendPage";
-import { useJWTToken } from "@/shared/lib";
 import { Button, Panel } from "@/shared/ui/components";
 import { NewSystemPage } from "@/pages/NewSystemPage";
+import { StoreProvider } from "@/app/providers/StoreProvider";
+import { useAppSelector } from "@/shared/lib";
+import { getToken } from "@/shared/models/user.ts";
 
 function LayoutWithHeaderAndAuthChecker() {
-  const {token} = useJWTToken();
+  const token = useAppSelector(getToken);
   const navigate = useNavigate();
 
   return (
     <>
       <Header />
-      {token !== undefined ? (
+      {token !== null ? (
         <main className="h-full">
           <Outlet />
         </main>
@@ -55,5 +57,10 @@ const App: React.FC = () => {
     </div>
   )
 }
+const AppWithStore: React.FC = () => (
+    <StoreProvider>
+      <App />
+    </StoreProvider>
+);
 
-export default App;
+export default AppWithStore;

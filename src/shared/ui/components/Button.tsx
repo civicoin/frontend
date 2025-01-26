@@ -1,8 +1,7 @@
 import classNames from "classnames";
-import type React from "react";
+import type { PropsWithChildren } from "react";
 
 interface ButtonProps {
-  children?: React.ReactNode | string
   className?: string
   style?: object
   background?: string
@@ -11,7 +10,7 @@ interface ButtonProps {
   onClick?: () => unknown
 }
 
-export function Button(props: ButtonProps) {
+export function Button(props: PropsWithChildren & ButtonProps) {
   const classes = classNames(
     props.className,
     props.fontSize ? `${props.fontSize}` : "text-4xl",

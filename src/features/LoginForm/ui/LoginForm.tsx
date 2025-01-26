@@ -2,11 +2,11 @@ import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button, InputText, Logo, Panel } from "@/shared/ui/components";
-import { CreateMemberSchema } from "@/shared/models";
+import { setAccessToken, CreateMemberSchema } from "@/shared/models";
 import { getSystemByName } from "@/shared/api/system.ts";
 import { debounce } from "@/shared/utils";
 import { signUp, signIn, signInAsSystem } from "@/shared/api/auth.ts";
-import { useJWTToken } from "@/shared/lib";
+import { useAppDispatch } from "@/shared/lib";
 
 import { type TabHandler, Tabs } from "./TabsRow.tsx";
 
@@ -21,7 +21,8 @@ const signUpIndex = TABS.indexOf("Sign up");
 
 export function LoginForm() {
   const navigate = useNavigate();
-  const {saveToken} = useJWTToken();
+  const dispatch = useAppDispatch();
+
   const [isNewSystem, setIsNewSystem] = useState(false);
   const [systemId, setSystemId] = useState("");
 
@@ -44,7 +45,7 @@ export function LoginForm() {
   async function onSignIn(data: CreateMemberSchema & {systemName: string}) {
     const res = data.name !== "" ? await signIn(data) : await signInAsSystem({name: data.systemName, password: data.password});
     if (res.data.accessToken) {
-      saveToken(res.data.accessToken);
+      dispatch(setAccessToken(res.data.accessToken));
       return true;
     }
     return false;

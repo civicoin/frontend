@@ -5,10 +5,11 @@ import { Button, Panel } from "@/shared/ui/components";
 import ArrowUp from "@/shared/ui/assets/icons/arrow_up.svg?react";
 import { getMe } from "@/shared/api/user.ts";
 import { getBalance, getSystemById } from "@/shared/api/system.ts";
-import { JWTToken, useJWTToken } from "@/shared/lib/hooks.ts";
+import { useAppSelector } from "@/shared/lib";
+import { getToken, type JWTToken } from "@/shared/models/user.ts";
 
 async function fetchData(token: JWTToken) {
-  const balance = await getBalance(token);
+  const balance = await getBalance(token!);
   const { data: { systemId } } = await getMe(token);
   const { data: { coin } } = await getSystemById(systemId);
 
@@ -17,7 +18,8 @@ async function fetchData(token: JWTToken) {
 
 export function CurrencyActionsPanel() {
   const navigate = useNavigate();
-  const { token } = useJWTToken();
+  const token = useAppSelector(getToken);
+
   const [balance, setBalance] = useState("");
   const [currency, setCurrency] = useState("");
 

@@ -1,7 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 import { Button, InputText } from "@/shared/ui/components";
 import ArrowUp from "@/shared/ui/assets/icons/arrow_up.svg?react";
 import { Panel } from "@/shared/ui/components/Panel";
-import { useNavigate } from "react-router-dom";
 
 export function CoinActionsForm() {
   const navigate = useNavigate();

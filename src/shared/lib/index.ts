@@ -1,1 +1,1 @@
-export { useJWTToken } from "@/shared/lib/hooks.ts";
+export { useAppDispatch, useAppSelector } from "./hooks";

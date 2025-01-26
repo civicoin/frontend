@@ -1,34 +1,16 @@
-import { useState } from 'react';
+// import { useState } from 'react';
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
-export type JWTToken = string;
+import { UserRole } from "../models";
 
-function getToken() {
-  const stringToken = localStorage.getItem("accessToken");
-  // const stringToken = null;
-  if (stringToken === null) return undefined;
-
-  // const userToken = JSON.parse(stringToken);
-  // return userToken?.token;
-  return stringToken;
+type JWTData = {
+  id: "string",
+  systemId: "string",
+  role: UserRole
 }
 
-function updateToken(stringToken: JWTToken) {
-  localStorage.setItem("accessToken", stringToken);
-  return stringToken;
-}
+export const useDecode = (token: string) => jwtDecode<JwtPayload & JWTData>(token);
 
-export function useJWTToken() {
-  const [token, setToken] = useState(getToken());
-
-  function saveToken (userToken: string) {
-    updateToken(userToken);
-    setToken(userToken);
-  }
-
-  function clearToken() {
-    localStorage.removeItem("accessToken");
-    setToken(undefined);
-  }
-
-  return {token, saveToken, clearToken};
-}
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

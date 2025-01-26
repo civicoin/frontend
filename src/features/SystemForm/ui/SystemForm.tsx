@@ -4,8 +4,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button, InputText, Logo, Panel } from "@/shared/ui/components";
 import { debounce } from "@/shared/utils";
 import { getSystemByName } from "@/shared/api/system.ts";
-import { useJWTToken } from "@/shared/lib";
 import { signInAsSystem } from "@/shared/api/auth.ts";
+import { useAppDispatch } from "@/shared/lib";
+import { setAccessToken } from "@/shared/models";
 
 import { createSystem } from "../api";
 
@@ -18,7 +19,7 @@ interface FormFields extends HTMLFormControlsCollection {
 function SystemForm() {
   const location = useLocation();
   const navigate = useNavigate();
-  const {saveToken} = useJWTToken();
+  const dispatch = useAppDispatch();
 
   const [isNewSystem, setIsNewSystem] = useState(false);
   const checker = debounce(async (systemName: string) => {
@@ -49,7 +50,7 @@ function SystemForm() {
     if (systemInfo.response.ok) {
       const signed = await signInAsSystem(systemCredentials);
       if (signed.response.ok) {
-        saveToken(signed.data.accessToken);
+        dispatch(setAccessToken(signed.data.accessToken));
         navigate("/");
       }
     } else {
