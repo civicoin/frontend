@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 import Logout from "../assets/icons/logout.svg?react";
 import ArrowUp from "../assets/icons/arrow_up.svg?react";
-import { getMe } from "../../api/user";
+import { getMe as userGetMe } from "../../api/user";
+import { getMe as systemGetMe } from "../../api/system";
 import { useAppDispatch, useAppSelector } from "../../lib";
 import { clearAccessToken, getToken } from "../../models/user";
 // import { useDecode } from "../../lib/hooks.ts";
+import { useTokenDecode as parseToken } from "../../lib/hooks";
+import { UserRole } from "../../models";
 
 import { Logo } from "./Logo";
 
@@ -19,10 +22,21 @@ export function Header() {
 
   useEffect(() => {
     if (token) {
-      // TODO get user type
-      // const decoded = useDecode(token);
+      let getMeFunction;
+      const decodedData = parseToken(token);
+      switch (decodedData.role) {
+        case UserRole.ADMIN:
+          getMeFunction = systemGetMe;
+          break;
+        case UserRole.MEMBER:
+          getMeFunction = userGetMe;
+          break;
+      }
+      if (!getMeFunction) {
+        throw new Error("User type is not defined!");
+      }
 
-      getMe(token).then(res => {
+      getMeFunction(token).then(res => {
         setUsername(res.data.name);
       });
     }

@@ -1,2 +1,2 @@
-import { CoinActionsForm as SendPage } from "@/features/CurrencyActionsForm";
+import { SendForm as SendPage } from "@/features/SendForm";
 export default SendPage;

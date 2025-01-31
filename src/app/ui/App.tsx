@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Routes, BrowserRouter, Outlet, useNavigate } from "react-router-dom";
+import React, { type PropsWithChildren } from "react";
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 
 // import './App.css'
 // import './output.css'
@@ -13,6 +13,9 @@ import { NewSystemPage } from "@/pages/NewSystemPage";
 import { StoreProvider } from "@/app/providers/StoreProvider";
 import { useAppSelector } from "@/shared/lib";
 import { getToken } from "@/shared/models/user.ts";
+import { useTokenDecode as parseToken } from "@/shared/lib/hooks";
+import { UserRole } from "@/shared/models";
+import ErrorPage from "@/pages/ErrorPage";
 
 function LayoutWithHeaderAndAuthChecker() {
   const token = useAppSelector(getToken);
@@ -37,6 +40,19 @@ function LayoutWithHeaderAndAuthChecker() {
   );
 }
 
+function ProtectedRoute({ allowedRoles, onError = ErrorPage }: PropsWithChildren & { allowedRoles: UserRole[], onError?: () => JSX.Element }) {
+  const token = useAppSelector(getToken);
+  if (!token) return <Navigate to="/unauthorized" replace />;
+
+  const decodedData = parseToken(token);
+  if (allowedRoles.includes(decodedData.role)) {
+    return <Outlet />;
+  } else {
+    const ErrorPage = onError;
+    return <ErrorPage />;
+  }
+}
+
 const App: React.FC = () => {
   return (
     /** font family changed in tailwind config */
@@ -50,8 +66,15 @@ const App: React.FC = () => {
 
           <Route path="/" element={<LayoutWithHeaderAndAuthChecker />}>
             <Route index={true} element={<MainPage />} />
-            <Route path="send" element={<SendPage />} />
+            <Route element={<ProtectedRoute allowedRoles={[UserRole.MEMBER]} />}>
+              <Route path="send" element={<SendPage />} />
+            </Route>
+            {/*<Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN]} />}>*/}
+            {/*  <Route path="send" element={<EmitPage />} />*/}
+            {/*</Route>*/}
           </Route>
+
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>
     </div>

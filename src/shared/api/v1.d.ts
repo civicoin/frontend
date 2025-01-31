@@ -131,6 +131,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/system/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get my system info
+         * @description Get my system info
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["def-0"]["systemResponseSchema"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/system/{id}": {
         parameters: {
             query?: never;
@@ -139,8 +178,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get system
-         * @description Get system
+         * Get public info of the system
+         * @description Get public info of the system
          */
         get: {
             parameters: {

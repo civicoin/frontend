@@ -1,6 +1,6 @@
-import { JWTToken } from "@/shared/lib/hooks.ts";
 import { GET } from "@/shared/api/client.ts";
 import { throwAnyErrors } from "@/shared/utils";
+import { JWTToken } from "@/shared/models/user.ts";
 
 export async function getMe(accessToken: JWTToken) {
   return await throwAnyErrors(GET("/member/{id}", {

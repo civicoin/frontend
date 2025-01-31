@@ -1,1 +1,1 @@
-export { CurrencyActionsPanel } from "./ui/CurrencyActionsPanel";
+export { CurrencyActionsUserPanel, CurrencyActionsAdminPanel } from "./ui";

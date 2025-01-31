@@ -1,4 +1,3 @@
-// import { useState } from 'react';
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
@@ -10,7 +9,7 @@ type JWTData = {
   role: UserRole
 }
 
-export const useDecode = (token: string) => jwtDecode<JwtPayload & JWTData>(token);
+export const useTokenDecode = (token: string) => jwtDecode<JwtPayload & JWTData>(token);
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

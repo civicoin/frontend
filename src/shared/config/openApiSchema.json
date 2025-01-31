@@ -479,13 +479,39 @@
         }
       }
     },
-    "/system/{id}": {
+    "/system/me": {
       "get": {
-        "summary": "Get system",
+        "summary": "Get my system info",
         "tags": [
           "System"
         ],
-        "description": "Get system",
+        "description": "Get my system info",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/def-0/properties/systemResponseSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/{id}": {
+      "get": {
+        "summary": "Get public info of the system",
+        "tags": [
+          "System"
+        ],
+        "description": "Get public info of the system",
         "parameters": [
           {
             "schema": {

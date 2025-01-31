@@ -1,5 +1,7 @@
-import { GET } from "./client.ts";
 import { throwAnyErrors } from "@/shared/utils";
+import { JWTToken } from "@/shared/models/user.ts";
+
+import { GET } from "./client";
 // import { throwAnyErrors } from "../utils/api.ts";
 
 export async function getSystemByName(systemName: string) {
@@ -28,4 +30,17 @@ export async function getBalance(token: string) {
       "Authorization": "Bearer " + token
     }
   }));
+}
+
+export async function getMe(accessToken: JWTToken) {
+  return await throwAnyErrors(GET("/system/{id}", {
+    params: {
+      path: {
+        id: "me"
+      }
+    },
+    headers: {
+      "Authorization": "Bearer " + accessToken
+    }
+  }))
 }
