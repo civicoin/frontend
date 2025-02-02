@@ -1,13 +1,9 @@
 import classNames from "classnames";
-import type { PropsWithChildren } from "react";
+import type { ButtonHTMLAttributes, PropsWithChildren } from "react";
 
-interface ButtonProps {
-  className?: string
-  style?: object
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   background?: string
   fontSize?: string
-  disabled?: boolean
-  onClick?: () => unknown
 }
 
 export function Button(props: PropsWithChildren & ButtonProps) {

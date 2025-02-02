@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 
 import { Button, Panel } from "@/shared/ui/components";
 import ArrowUp from "@/shared/ui/assets/icons/arrow_up.svg?react";
-import { getBalance, getMe } from "@/shared/api/system";
+import { getMe } from "@/shared/api/system";
+import { getUserBalance } from "@/shared/api/user";
 import { useAppSelector } from "@/shared/lib";
 import { getToken, type JWTToken } from "@/shared/models/user";
 
 async function fetchData(token: JWTToken) {
-  const balance = await getBalance(token!);
+  const balance = await getUserBalance(token!);
   const systemData = await getMe(token!);
 
   return {balance: balance.data, coinName: systemData.data.coin}

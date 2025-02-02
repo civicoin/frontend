@@ -24,23 +24,28 @@ export async function getSystemById(systemId: string) {
   }));
 }
 
-export async function getBalance(token: string) {
-  return await throwAnyErrors(GET("/balance", {
+export async function getMembersByName(token: JWTToken, memberName: string) {
+  return await throwAnyErrors(GET("/member/members", {
     headers: {
       "Authorization": "Bearer " + token
+    },
+    params: {
+      query: {
+        name: memberName
+      }
     }
-  }));
+  }))
 }
 
-export async function getMe(accessToken: JWTToken) {
+export async function getMe(token: JWTToken) {
   return await throwAnyErrors(GET("/system/{id}", {
+    headers: {
+      "Authorization": "Bearer " + token
+    },
     params: {
       path: {
         id: "me"
       }
-    },
-    headers: {
-      "Authorization": "Bearer " + accessToken
     }
   }))
 }

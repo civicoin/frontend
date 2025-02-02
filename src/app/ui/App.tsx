@@ -16,6 +16,7 @@ import { getToken } from "@/shared/models/user.ts";
 import { useTokenDecode as parseToken } from "@/shared/lib/hooks";
 import { UserRole } from "@/shared/models";
 import ErrorPage from "@/pages/ErrorPage";
+import EmitPage from "@/pages/EmitPage";
 
 function LayoutWithHeaderAndAuthChecker() {
   const token = useAppSelector(getToken);
@@ -69,9 +70,9 @@ const App: React.FC = () => {
             <Route element={<ProtectedRoute allowedRoles={[UserRole.MEMBER]} />}>
               <Route path="send" element={<SendPage />} />
             </Route>
-            {/*<Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN]} />}>*/}
-            {/*  <Route path="send" element={<EmitPage />} />*/}
-            {/*</Route>*/}
+            <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN]} />}>
+              <Route path="emit" element={<EmitPage />} />
+            </Route>
           </Route>
 
           <Route path="*" element={<ErrorPage />} />

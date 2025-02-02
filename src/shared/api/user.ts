@@ -14,3 +14,11 @@ export async function getMe(accessToken: JWTToken) {
     }
   }))
 }
+
+export async function getUserBalance(token: JWTToken) {
+  return await throwAnyErrors(GET("/balance", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  }));
+}
